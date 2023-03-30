@@ -14,13 +14,15 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
+import 'package:tictactoe/src/game_internals/board_setting.dart';
+import 'package:tictactoe/src/level_selection/game_map.dart';
+import 'package:collection/collection.dart';
 
 import 'src/ads/ads_controller.dart';
 import 'src/app_lifecycle/app_lifecycle.dart';
 import 'src/audio/audio_controller.dart';
 import 'src/crashlytics/crashlytics.dart';
 import 'src/games_services/games_services.dart';
-import 'src/games_services/score.dart';
 import 'src/in_app_purchase/in_app_purchase.dart';
 import 'src/level_selection/level_selection_screen.dart';
 import 'src/level_selection/levels.dart';
@@ -133,8 +135,18 @@ class MyApp extends StatelessWidget {
           routes: [
             GoRoute(
                 path: 'play',
+                redirect: (BuildContext context, GoRouterState state) =>
+                    "/play/single"),
+            GoRoute(
+                path: 'play/:mode',
+                redirect: (BuildContext context, GoRouterState state) =>
+                    state.params["mode"] == "single" ||
+                            state.params["mode"] == "vs"
+                        ? null
+                        : "/play/single",
                 pageBuilder: (context, state) => buildMyTransition<void>(
-                      child: const LevelSelectionScreen(
+                      child: LevelSelectionScreen(
+                          isVsMode: state.params['mode'] == "vs",
                           key: Key('level selection')),
                       color: context.watch<Palette>().backgroundLevelSelection,
                     ),
@@ -143,11 +155,25 @@ class MyApp extends StatelessWidget {
                     path: 'session/:level',
                     pageBuilder: (context, state) {
                       final levelNumber = int.parse(state.params['level']!);
-                      final level = gameLevels
-                          .singleWhere((e) => e.number == levelNumber);
+                      final isVsMode = state.params["mode"] == "vs";
+                      late final BoardSetting setting;
+                      if (isVsMode) {
+                        setting = gameMaps
+                                .firstWhereOrNull(
+                                    (element) => element.id == levelNumber)
+                                ?.setting ??
+                            BoardSetting.defaultBoard();
+                      } else {
+                        //todo fix this:: handle properly for the cases when the level doesnot exist and cannot play the level yet
+                        setting = gameLevels
+                                .firstWhereOrNull(
+                                    (element) => element.id == levelNumber)
+                                ?.setting ??
+                            BoardSetting.defaultBoard();
+                      }
                       return buildMyTransition<void>(
                         child: PlaySessionScreen(
-                          level,
+                          setting,
                           key: const Key('play session'),
                         ),
                         color: context.watch<Palette>().backgroundPlaySession,
@@ -158,11 +184,18 @@ class MyApp extends StatelessWidget {
                     path: 'won',
                     pageBuilder: (context, state) {
                       final map = state.extra! as Map<String, dynamic>;
-                      final score = map['score'] as Score;
+                      final BoardSetting setting =
+                          map["setting"] is BoardSetting
+                              ? map["setting"] as BoardSetting
+                              : BoardSetting.defaultBoard();
+                      final resultMessage = map["message"] is String
+                          ? map["message"]
+                          : "Game is interrupted";
 
                       return buildMyTransition<void>(
                         child: WinGameScreen(
-                          score: score,
+                          message: resultMessage,
+                          setting: setting,
                           key: const Key('win game'),
                         ),
                         color: context.watch<Palette>().backgroundPlaySession,

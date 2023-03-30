@@ -8,23 +8,23 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart' hide Level;
 import 'package:provider/provider.dart';
+import 'package:tictactoe/src/game_internals/board_setting.dart';
+import 'package:tictactoe/src/game_internals/board_state.dart';
+import 'package:tictactoe/src/game_internals/enums.dart';
+import 'package:tictactoe/src/play_session/play_session_screen_ui.dart';
+import 'package:tictactoe/src/settings/settings.dart';
 
 import '../ads/ads_controller.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
-import '../game_internals/level_state.dart';
-import '../games_services/games_services.dart';
-import '../games_services/score.dart';
 import '../in_app_purchase/in_app_purchase.dart';
-import '../level_selection/levels.dart';
-import '../player_progress/player_progress.dart';
 import '../style/confetti.dart';
 import '../style/palette.dart';
 
 class PlaySessionScreen extends StatefulWidget {
-  final GameLevel level;
+  final BoardSetting setting;
 
-  const PlaySessionScreen(this.level, {super.key});
+  const PlaySessionScreen(this.setting, {super.key});
 
   @override
   State<PlaySessionScreen> createState() => _PlaySessionScreenState();
@@ -47,72 +47,32 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => LevelState(
-            goal: widget.level.difficulty,
-            onWin: _playerWon,
-          ),
-        ),
+        ChangeNotifierProvider(create: (context) {
+          final state = BoardState.new(widget.setting)..initializeBoard();
+          state.gameResult.addListener(() => _onGameComplete(state));
+          return state;
+        }),
       ],
       child: IgnorePointer(
         ignoring: _duringCelebration,
-        child: Scaffold(
-          backgroundColor: palette.backgroundPlaySession,
-          body: Stack(
-            children: [
-              Center(
-                // This is the entirety of the "game".
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: InkResponse(
-                        onTap: () => GoRouter.of(context).push('/settings'),
-                        child: Image.asset(
-                          'assets/images/settings.png',
-                          semanticLabel: 'Settings',
-                        ),
+        child: SafeArea(
+          child: Scaffold(
+            backgroundColor: palette.backgroundPlaySession,
+            body: Stack(
+              children: [
+                PlaySessionScreenUI(),
+                SizedBox.expand(
+                  child: Visibility(
+                    visible: _duringCelebration,
+                    child: IgnorePointer(
+                      child: Confetti(
+                        isStopped: !_duringCelebration,
                       ),
-                    ),
-                    const Spacer(),
-                    Text('Drag the slider to ${widget.level.difficulty}%'
-                        ' or above!'),
-                    Consumer<LevelState>(
-                      builder: (context, levelState, child) => Slider(
-                        label: 'Level Progress',
-                        autofocus: true,
-                        value: levelState.progress / 100,
-                        onChanged: (value) =>
-                            levelState.setProgress((value * 100).round()),
-                        onChangeEnd: (value) => levelState.evaluate(),
-                      ),
-                    ),
-                    const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: FilledButton(
-                          onPressed: () => GoRouter.of(context).go('/play'),
-                          child: const Text('Back'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox.expand(
-                child: Visibility(
-                  visible: _duringCelebration,
-                  child: IgnorePointer(
-                    child: Confetti(
-                      isStopped: !_duringCelebration,
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -134,47 +94,35 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
     }
   }
 
-  Future<void> _playerWon() async {
-    _log.info('Level ${widget.level.number} won');
-
-    final score = Score(
-      widget.level.number,
-      widget.level.difficulty,
-      DateTime.now().difference(_startOfPlay),
-    );
-
-    final playerProgress = context.read<PlayerProgress>();
-    playerProgress.setLevelReached(widget.level.number);
-
-    // Let the player see the game just after winning for a bit.
+  Future<void> _onGameComplete(BoardState state) async {
     await Future<void>.delayed(_preCelebrationDuration);
-    if (!mounted) return;
 
-    setState(() {
-      _duringCelebration = true;
-    });
+    final isGameDraw = state.gameResult.value == Side.NONE;
+    if (isGameDraw) {
+      GoRouter.of(context).go("/play/vs/won", extra: {
+        "message": "Game Finished. It's a draw",
+        "setting": widget.setting
+      });
+    } else {
+      if (!mounted) return;
 
-    final audioController = context.read<AudioController>();
-    audioController.playSfx(SfxType.congrats);
+      setState(() {
+        _duringCelebration = true;
+      });
 
-    final gamesServicesController = context.read<GamesServicesController?>();
-    if (gamesServicesController != null) {
-      // Award achievement.
-      if (widget.level.awardsAchievement) {
-        await gamesServicesController.awardAchievement(
-          android: widget.level.achievementIdAndroid!,
-          iOS: widget.level.achievementIdIOS!,
-        );
-      }
+      final audioController = context.read<AudioController>();
+      audioController.playSfx(SfxType.congrats);
 
-      // Send score to leaderboard.
-      await gamesServicesController.submitLeaderboardScore(score);
+      /// Give the player some time to see the celebration animation.
+      await Future<void>.delayed(_celebrationDuration);
+      if (!mounted) return;
+
+      final _settings = context.read<SettingsController>();
+      GoRouter.of(context).go('/play/${widget.setting.isAiPlaying ? 'single':'vs'}/won', extra: {
+        "message":
+            "${state.isPlayer1Winner ? _settings.playerName.value : widget.setting.isAiPlaying ? "Ai":"player2"} wins",
+        "setting": widget.setting
+      });
     }
-
-    /// Give the player some time to see the celebration animation.
-    await Future<void>.delayed(_celebrationDuration);
-    if (!mounted) return;
-
-    GoRouter.of(context).go('/play/won', extra: {'score': score});
   }
 }

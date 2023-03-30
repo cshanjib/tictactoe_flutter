@@ -31,7 +31,7 @@ class MainMenuScreen extends StatelessWidget {
           child: Transform.rotate(
             angle: -0.1,
             child: const Text(
-              'Flutter Game Template!',
+              'Tic Tac Toe',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Permanent Marker',
@@ -47,9 +47,16 @@ class MainMenuScreen extends StatelessWidget {
             FilledButton(
               onPressed: () {
                 audioController.playSfx(SfxType.buttonTap);
-                GoRouter.of(context).go('/play');
+                GoRouter.of(context).go('/play/single');
               },
               child: const Text('Play'),
+            ),
+            FilledButton(
+              onPressed: () {
+                audioController.playSfx(SfxType.buttonTap);
+                GoRouter.of(context).go('/play/vs');
+              },
+              child: const Text('Versus Mode'),
             ),
             _gap,
             if (gamesServicesController != null) ...[

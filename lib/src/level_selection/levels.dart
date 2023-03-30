@@ -2,10 +2,16 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:tictactoe/src/ai/random_opponent.dart';
+import 'package:tictactoe/src/ai/smart_opponent.dart';
+import 'package:tictactoe/src/ai/thinking_opponent.dart';
+import 'package:tictactoe/src/game_internals/board_setting.dart';
+
 const gameLevels = [
   GameLevel(
-    number: 1,
+    id: 1,
     difficulty: 5,
+    setting: BoardSetting(3, 3, 3, gameId: 1, aiOpponent: RandomOpponent()),
     // TODO: When ready, change these achievement IDs.
     // You configure this in App Store Connect.
     achievementIdIOS: 'first_win',
@@ -13,21 +19,53 @@ const gameLevels = [
     achievementIdAndroid: 'NhkIwB69ejkMAOOLDb',
   ),
   GameLevel(
-    number: 2,
-    difficulty: 42,
+      id: 2,
+      difficulty: 42,
+      setting: BoardSetting(3, 3, 3,
+          gameId: 2, aiOpponent: RandomOpponent(), opponentStarts: true)),
+  GameLevel(
+    id: 3,
+    setting: BoardSetting(4, 4, 3,
+        gameId: 3, aiOpponent: RandomOpponent(), opponentStarts: true),
+    difficulty: 100,
   ),
   GameLevel(
-    number: 3,
-    difficulty: 100,
-    achievementIdIOS: 'finished',
-    achievementIdAndroid: 'CdfIhE96aspNWLGSQg',
+    id: 4,
+    setting: BoardSetting(3, 3, 3, gameId: 4, aiOpponent: ThinkingOpponent()),
+    difficulty: 200,
+  ),
+  GameLevel(
+    id: 5,
+    setting: BoardSetting(3, 3, 3,
+        gameId: 5, aiOpponent: ThinkingOpponent(), opponentStarts: true),
+    difficulty: 300,
+  ),
+  GameLevel(
+    id: 6,
+    setting: BoardSetting(4, 4, 3,
+        gameId: 6, aiOpponent: ThinkingOpponent(), opponentStarts: true),
+    difficulty: 400,
+  ),
+  GameLevel(
+    id: 7,
+    setting: BoardSetting(3, 3, 3,
+        gameId: 7, aiOpponent: SmartOpponent()),
+    difficulty: 500,
+  ),
+  GameLevel(
+    id: 8,
+    setting: BoardSetting(3, 3, 3,
+        gameId: 8, aiOpponent: SmartOpponent(), opponentStarts: true),
+    difficulty: 600,
   ),
 ];
 
 class GameLevel {
-  final int number;
+  final int id;
 
   final int difficulty;
+
+  final BoardSetting setting;
 
   /// The achievement to unlock when the level is finished, if any.
   final String? achievementIdIOS;
@@ -37,7 +75,8 @@ class GameLevel {
   bool get awardsAchievement => achievementIdAndroid != null;
 
   const GameLevel({
-    required this.number,
+    required this.id,
+    required this.setting,
     required this.difficulty,
     this.achievementIdIOS,
     this.achievementIdAndroid,
