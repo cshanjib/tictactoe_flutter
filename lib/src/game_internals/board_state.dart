@@ -41,6 +41,10 @@ class BoardState extends ChangeNotifier {
     //make the first move for Ai when playing against Ai and it starts first
     if(setting.isAiPlaying && setting.opponentStarts){
       _moves.addAll({Tile(setting.m~/2, setting.n~/2): currentTurn});
+
+      // occupyTile(Tile(setting.m~/2, setting.n~/2), isAiMove: true);
+      // occupyTile(setting.aiOpponent!.chooseNextMove(this), isAiMove: true);
+
     }
     notifyListeners();
   }
