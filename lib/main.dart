@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:tictactoe/src/game_internals/board_setting.dart';
 import 'package:tictactoe/src/level_selection/game_map.dart';
 import 'package:collection/collection.dart';
+import 'package:tictactoe/src/style/ink_transition.dart';
 
 import 'src/ads/ads_controller.dart';
 import 'src/app_lifecycle/app_lifecycle.dart';
@@ -35,7 +36,6 @@ import 'src/settings/persistence/local_storage_settings_persistence.dart';
 import 'src/settings/persistence/settings_persistence.dart';
 import 'src/settings/settings.dart';
 import 'src/settings/settings_screen.dart';
-import 'src/style/my_transition.dart';
 import 'src/style/palette.dart';
 import 'src/style/snack_bar.dart';
 import 'src/win_game/win_game_screen.dart';
@@ -144,7 +144,7 @@ class MyApp extends StatelessWidget {
                             state.params["mode"] == "vs"
                         ? null
                         : "/play/single",
-                pageBuilder: (context, state) => buildMyTransition<void>(
+                pageBuilder: (context, state) => buildTransition<void>(
                       child: LevelSelectionScreen(
                           isVsMode: state.params['mode'] == "vs",
                           key: Key('level selection')),
@@ -171,7 +171,7 @@ class MyApp extends StatelessWidget {
                                 ?.setting ??
                             BoardSetting.defaultBoard();
                       }
-                      return buildMyTransition<void>(
+                      return buildTransition<void>(
                         child: PlaySessionScreen(
                           setting,
                           key: const Key('play session'),
@@ -192,7 +192,7 @@ class MyApp extends StatelessWidget {
                           ? map["message"]
                           : "Game is interrupted";
 
-                      return buildMyTransition<void>(
+                      return buildTransition<void>(
                         child: WinGameScreen(
                           message: resultMessage,
                           setting: setting,
