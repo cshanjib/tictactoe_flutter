@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tictactoe/src/game_internals/tile.dart';
@@ -7,16 +6,17 @@ import 'package:tictactoe/src/style/palette.dart';
 class BoardLines extends StatelessWidget {
   final int m;
   final int n;
+  final Color? color;
+  final double? strokeWidth;
 
-  const BoardLines({Key? key, required this.m, required this.n})
+  const BoardLines({Key? key, required this.m, required this.n, this.color, this.strokeWidth})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final palette = context.watch<Palette>();
     return RepaintBoundary(
         child: CustomPaint(
-      painter: GamesLinesPainter(m, n, lineColor: palette.ink),
+      painter: GamesLinesPainter(m, n, lineColor: color ?? Colors.black, strokeWidth: strokeWidth ),
     ));
   }
 }
@@ -25,16 +25,17 @@ class GamesLinesPainter extends CustomPainter {
   final int m;
   final int n;
   final Color lineColor;
+  final double? strokeWidth;
 
   late final pathPaint = Paint()
     ..colorFilter = ColorFilter.mode(lineColor, BlendMode.srcIn);
 
-  GamesLinesPainter(this.m, this.n, {this.lineColor = Colors.black});
+  GamesLinesPainter(this.m, this.n, {required this.lineColor, this.strokeWidth});
 
   @override
   void paint(Canvas canvas, Size size) {
     const padding = 10.0;
-    pathPaint.strokeWidth = 8;
+    pathPaint.strokeWidth = strokeWidth ?? 8;
 
     //draw horizontal lines
     final heightStep = size.height / n;

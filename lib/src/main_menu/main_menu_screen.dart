@@ -5,6 +5,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:tictactoe/src/main_menu/main_animation.dart';
+import 'package:tictactoe/src/play_session/board_lines.dart';
+import 'package:tictactoe/src/style/tapered_boarder.dart';
+import 'package:tictactoe/src/style/tapered_button.dart';
 
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
@@ -27,77 +31,76 @@ class MainMenuScreen extends StatelessWidget {
       backgroundColor: palette.backgroundMain,
       body: ResponsiveScreen(
         mainAreaProminence: 0.45,
-        squarishMainArea: Center(
-          child: Transform.rotate(
-            angle: -0.1,
-            child: const Text(
-              'Tic Tac Toe',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Permanent Marker',
-                fontSize: 55,
-                height: 1,
-              ),
-            ),
-          ),
-        ),
-        rectangularMenuArea: Column(
+        topMessageArea: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            FilledButton(
-              onPressed: () {
-                audioController.playSfx(SfxType.buttonTap);
-                GoRouter.of(context).go('/play/single');
-              },
-              child: const Text('Play'),
-            ),
-            FilledButton(
-              onPressed: () {
-                audioController.playSfx(SfxType.buttonTap);
-                GoRouter.of(context).go('/play/vs');
-              },
-              child: const Text('Versus Mode'),
-            ),
-            _gap,
-            if (gamesServicesController != null) ...[
-              _hideUntilReady(
-                ready: gamesServicesController.signedIn,
-                child: FilledButton(
-                  onPressed: () => gamesServicesController.showAchievements(),
-                  child: const Text('Achievements'),
+            InkResponse(
+                onTap: () => GoRouter.of(context).go('/settings'),
+                child: Image.asset('assets/images/settings.png',
+                    color: palette.text))
+          ],
+        ),
+        squarishMainArea: Transform.rotate(angle: 0.02, child: MainAnimation()),
+        rectangularMenuArea: Container(
+          margin: EdgeInsets.all(10),
+          padding: EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TaperedButton(
+                  label: 'Play',
+                  onPressed: () {
+                    audioController.playSfx(SfxType.buttonTap);
+                    GoRouter.of(context).go('/play/single');
+                  }),
+              _gap,
+              TaperedButton(
+                  label: "Versus",
+                  reverse: true,
+                  onPressed: () {
+                    audioController.playSfx(SfxType.buttonTap);
+                    GoRouter.of(context).go('/play/vs');
+                  }),
+              _gap,
+              if (gamesServicesController != null) ...[
+                _hideUntilReady(
+                  ready: gamesServicesController.signedIn,
+                  child: TaperedButton(
+                    onPressed: () => gamesServicesController.showAchievements(),
+                    label: "Achievements",
+                  ),
+                ),
+                _gap,
+                _hideUntilReady(
+                  ready: gamesServicesController.signedIn,
+                  child: TaperedButton(
+                    onPressed: () => gamesServicesController.showLeaderboard(),
+                    label: "Leaderboard",
+                  ),
+                ),
+                _gap,
+              ],
+              Padding(
+                padding: const EdgeInsets.only(top: 32),
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: settingsController.muted,
+                  builder: (context, muted, child) {
+                    return IconButton(
+                      color: palette.text,
+                      onPressed: () => settingsController.toggleMuted(),
+                      icon: Icon(muted ? Icons.volume_off : Icons.volume_up),
+                    );
+                  },
                 ),
               ),
               _gap,
-              _hideUntilReady(
-                ready: gamesServicesController.signedIn,
-                child: FilledButton(
-                  onPressed: () => gamesServicesController.showLeaderboard(),
-                  child: const Text('Leaderboard'),
-                ),
+              Text(
+                'Music by Mr Smith',
+                style: TextStyle(color: palette.text),
               ),
               _gap,
             ],
-            FilledButton(
-              onPressed: () => GoRouter.of(context).push('/settings'),
-              child: const Text('Settings'),
-            ),
-            _gap,
-            Padding(
-              padding: const EdgeInsets.only(top: 32),
-              child: ValueListenableBuilder<bool>(
-                valueListenable: settingsController.muted,
-                builder: (context, muted, child) {
-                  return IconButton(
-                    onPressed: () => settingsController.toggleMuted(),
-                    icon: Icon(muted ? Icons.volume_off : Icons.volume_up),
-                  );
-                },
-              ),
-            ),
-            _gap,
-            const Text('Music by Mr Smith'),
-            _gap,
-          ],
+          ),
         ),
       ),
     );
@@ -126,5 +129,5 @@ class MainMenuScreen extends StatelessWidget {
     );
   }
 
-  static const _gap = SizedBox(height: 10);
+  static const _gap = SizedBox(height: 20);
 }

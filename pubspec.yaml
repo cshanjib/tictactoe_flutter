@@ -48,6 +48,10 @@ flutter:
       fonts:
         - asset: assets/Permanent_Marker/PermanentMarker-Regular.ttf
 
+    - family: Cloudy
+      fonts:
+        - asset: assets/fonts/cloudy font.ttf
+
 flutter_icons:
   android: true
   ios: true
