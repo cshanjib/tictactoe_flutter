@@ -57,7 +57,7 @@ class XOAnimator extends StatelessWidget {
     return ForegroundDetector(
       onForegroundChanged: (isFor, hasGoneBack) async {
         if (!isFor) {
-          state.reInitiateSimulation(forceStop: true);
+          state.stopSimulation();
         } else if (hasGoneBack) {
           state.reInitiateSimulation();
         }

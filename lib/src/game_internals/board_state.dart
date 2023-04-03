@@ -83,14 +83,19 @@ class BoardState extends ChangeNotifier {
     }
   }
 
-  void reInitiateSimulation({forceStop = false}) async {
-    if (_simulationId == null && !forceStop) {
+  void reInitiateSimulation() async {
+    if (_simulationId == null) {
       _simulationId = DateTime.now().millisecondsSinceEpoch;
       simulation(id: _simulationId);
     } else {
-      _simulationId = null;
-      clearBoard(restartSimulation: false);
+      stopSimulation();
+      notifyListeners();
     }
+  }
+
+  void stopSimulation() async {
+    _simulationId = null;
+    clearBoard(restartSimulation: false);
   }
 
   void clearBoard({restartSimulation = true}) {
