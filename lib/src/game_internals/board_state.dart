@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:tictactoe/src/ai/ai_opponent.dart';
 import 'package:tictactoe/src/game_internals/board_setting.dart';
 import 'package:tictactoe/src/game_internals/enums.dart';
 import 'package:tictactoe/src/game_internals/tile.dart';
+import 'package:tictactoe/src/game_internals/winner_result.dart';
+import 'package:tictactoe/src/helpers/helper_functions.dart';
 
 class BoardState extends ChangeNotifier {
   Map<Tile, Side> _moves = {};
@@ -16,6 +19,7 @@ class BoardState extends ChangeNotifier {
 
   List winnerLines = [];
   List winCombos = [];
+  final bool simulate;
 
   bool get hasGameStarted => _moves.length > 0;
 
@@ -26,33 +30,54 @@ class BoardState extends ChangeNotifier {
   bool canOccupyTile(Tile tile) =>
       _moves[tile] == Side.NONE || _moves[tile] == null;
 
+  bool hasValueIn(pos) => _moves[pos] == Side.X || _moves[pos] == Side.O;
+
   Side get currentTurn => _moves.length % 2 == 0
       ? (setting.opponentStarts ? setting.opponentSide : setting.playerSide)
       : (setting.opponentStarts ? setting.playerSide : setting.opponentSide);
 
   final BoardSetting setting;
 
-  BoardState._(this.setting);
+  BoardState._(this.setting, {this.simulate = false});
 
-  BoardState.new(BoardSetting setting) : this._(setting);
+  BoardState.new(BoardSetting setting, {bool? simulate})
+      : this._(setting, simulate: simulate ?? false);
 
   void initializeBoard() {
-    _isLocked = false;
-    //make the first move for Ai when playing against Ai and it starts first
-    if(setting.isAiPlaying && setting.opponentStarts){
-      _moves.addAll({Tile(setting.m~/2, setting.n~/2): currentTurn});
-
-      // occupyTile(Tile(setting.m~/2, setting.n~/2), isAiMove: true);
-      // occupyTile(setting.aiOpponent!.chooseNextMove(this), isAiMove: true);
-
+    if (simulate) {
+      simulation();
+    } else {
+      _isLocked = false;
+      //make the first move for Ai when playing against Ai and it starts first
+      if (setting.isAiPlaying && setting.opponentStarts) {
+        _moves.addAll({Tile(setting.m ~/ 2, setting.n ~/ 2): currentTurn});
+      }
+      notifyListeners();
     }
-    notifyListeners();
+  }
+
+  void simulation({ai1, ai2}) async {
+    AiOpponent aiOpponent1 = ai1 ?? AiOpponent.getRandomOpponent();
+    AiOpponent aiOpponent2 = ai2 ?? AiOpponent.getRandomOpponent();
+
+    occupyTile((_moves.length % 2 == 0 ? aiOpponent1 : aiOpponent2)
+        .chooseNextMove(this));
+    await Future.delayed(Duration(seconds: 2));
+    if (gameResult.value == null) {
+      simulation(ai1: aiOpponent1, ai2: aiOpponent2);
+    } else {
+      _moves.clear();
+      notifyListeners();
+      await Future.delayed(Duration(seconds: 2));
+      clearBoard();
+    }
   }
 
   void clearBoard() {
     _moves.clear();
     winnerLines.clear();
     winCombos.clear();
+    gameResult.value = null;
     initializeBoard();
   }
 
@@ -90,198 +115,34 @@ class BoardState extends ChangeNotifier {
       _isLocked = false;
       notifyListeners();
     }
-
   }
 
-  bool hasSomeoneWon(Tile tile, Side currentSide, {checkOnly = false}) {
-    int _winningCount = 0;
-    bool _hasWinner = false;
-    List _tempWinCombos = [];
-    Tile _startTile = tile;
-    Tile _endTile = tile;
-    bool _mismatchTop = false;
-    bool _mismatchBottom = false;
+  bool hasSomeoneWon(Tile tile, Side currentSide,
+      {checkOnly = false,
+      CheckDirection direction = CheckDirection.vertical,
+      hasWinner = false}) {
+    final _result = HelperFunctions.checkForWinner(
+        tile, currentSide, setting, moves,
+        direction: direction, checkOnly: checkOnly);
 
-    //check for vertical lines
-    for (int i = 1; i < setting.k; i++) {
-      //check downwards
-      final downwardTile = Tile(tile.x, tile.y - i);
-      if (_moves[downwardTile] == currentSide && !_mismatchTop) {
-        _winningCount++;
-        _startTile = downwardTile;
-        _tempWinCombos.add(downwardTile);
-      }else{
-        _mismatchTop = true;
-      }
-
-      //check upwards
-      final upwardTile = Tile(tile.x, tile.y + i);
-      if (_moves[upwardTile] == currentSide && !_mismatchBottom) {
-        _winningCount++;
-        _endTile = upwardTile;
-        _tempWinCombos.add(_endTile);
-      }else{
-        _mismatchBottom = true;
-      }
-      if(_mismatchTop && _mismatchBottom){
-        break;
-      }
-
-      if (_winningCount >= setting.k - 1) {
-        if(checkOnly){
-          return true;
-        }
-        _hasWinner = true;
-        winnerLines = [
-          ...winnerLines,
-          [_startTile, _endTile]
-        ];
-        winCombos.addAll(_tempWinCombos);
-        winCombos.add(tile);
-        break;
-      }
-    }
-    _startTile = tile;
-    _endTile = tile;
-    _winningCount = 0;
-    _tempWinCombos.clear();
-    _mismatchTop = false;
-    _mismatchBottom = false;
-
-    //check for horizontal lines
-    for (int i = 1; i < setting.k; i++) {
-      //check left
-      final downwardTile = Tile(tile.x - i, tile.y);
-      if (_moves[downwardTile] == currentSide && !_mismatchTop) {
-        _winningCount++;
-        _startTile = downwardTile;
-        _tempWinCombos.add(downwardTile);
-      }else{
-        _mismatchTop = true;
-      }
-
-      //check right
-      final upwardTile = Tile(tile.x + i, tile.y);
-      if (_moves[upwardTile] == currentSide && !_mismatchBottom) {
-        _winningCount++;
-        _endTile = upwardTile;
-        _tempWinCombos.add(_endTile);
-      }else{
-        _mismatchBottom = true;
-      }
-
-      if(_mismatchTop && _mismatchBottom){
-        break;
-      }
-
-      if (_winningCount >= setting.k - 1) {
-        if(checkOnly){
-          return true;
-        }
-        _hasWinner = true;
-        winnerLines = [
-          ...winnerLines,
-          [_startTile, _endTile]
-        ];
-        winCombos.addAll(_tempWinCombos);
-        winCombos.add(tile);
-        break;
-      }
-    }
-    _startTile = tile;
-    _endTile = tile;
-    _winningCount = 0;
-    _tempWinCombos.clear();
-    _mismatchTop = false;
-    _mismatchBottom = false;
-
-    //check for diagonal lines: type1
-    for (int i = 1; i < setting.k; i++) {
-      //check upper left
-      final downwardTile = Tile(tile.x - i, tile.y + i);
-      if (_moves[downwardTile] == currentSide && !_mismatchTop) {
-        _winningCount++;
-        _startTile = downwardTile;
-        _tempWinCombos.add(downwardTile);
-      }else{
-        _mismatchTop = true;
-      }
-
-      //check downward right
-      final upwardTile = Tile(tile.x + i, tile.y - i);
-      if (_moves[upwardTile] == currentSide && !_mismatchBottom) {
-        _winningCount++;
-        _endTile = upwardTile;
-        _tempWinCombos.add(_endTile);
-      }else{
-        _mismatchBottom = true;
-      }
-      if(_mismatchTop && _mismatchBottom){
-        break;
-      }
-
-      if (_winningCount >= setting.k - 1) {
-        if(checkOnly){
-          return true;
-        }
-        _hasWinner = true;
-        winnerLines = [
-          ...winnerLines,
-          [_startTile, _endTile]
-        ];
-        winCombos.addAll(_tempWinCombos);
-        winCombos.add(tile);
-        break;
-      }
-    }
-    _startTile = tile;
-    _endTile = tile;
-    _winningCount = 0;
-    _tempWinCombos.clear();
-    _mismatchTop = false;
-    _mismatchBottom = false;
-
-    //check for diagonal lines: Type2
-    for (int i = 1; i < setting.k; i++) {
-      //check bottom left
-      final downwardTile = Tile(tile.x - i, tile.y - i);
-      if (_moves[downwardTile] == currentSide && !_mismatchTop) {
-        _winningCount++;
-        _startTile = downwardTile;
-        _tempWinCombos.add(downwardTile);
-      }else{
-        _mismatchTop = true;
-      }
-
-      //check top right
-      final upwardTile = Tile(tile.x + i, tile.y + i);
-      if (_moves[upwardTile] == currentSide && !_mismatchBottom) {
-        _winningCount++;
-        _endTile = upwardTile;
-        _tempWinCombos.add(_endTile);
-      }else{
-        _mismatchBottom = true;
-      }
-
-      if(_mismatchTop && _mismatchBottom){
-        break;
-      }
-
-      if (_winningCount >= setting.k - 1) {
-        if(checkOnly){
-          return true;
-        }
-        _hasWinner = true;
-        winnerLines = [
-          ...winnerLines,
-          [_startTile, _endTile]
-        ];
-        winCombos.addAll(_tempWinCombos);
-        winCombos.add(tile);
-        break;
-      }
+    if (_result is bool && _result && checkOnly) {
+      return true;
+    } else if (_result is WinnerResult) {
+      hasWinner = true;
+      winnerLines = [...winnerLines, _result.winnerLines];
+      winCombos.addAll(_result.winnerCombos);
     }
 
-    return _hasWinner;
+    return direction == CheckDirection.bottomLeftToTopRight
+        ? hasWinner
+        : hasSomeoneWon(tile, currentSide,
+            checkOnly: checkOnly,
+            hasWinner: hasWinner,
+            direction: direction == CheckDirection.vertical
+                ? CheckDirection.horizontal
+                : direction == CheckDirection.horizontal
+                    ? CheckDirection.bottomRightToTopLeft
+                    : CheckDirection.bottomLeftToTopRight);
+
   }
 }
