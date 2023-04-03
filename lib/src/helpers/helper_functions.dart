@@ -1,3 +1,7 @@
+import 'package:tictactoe/src/ai/ai_opponent.dart';
+import 'package:tictactoe/src/ai/random_opponent.dart';
+import 'package:tictactoe/src/ai/smart_opponent.dart';
+import 'package:tictactoe/src/ai/thinking_opponent.dart';
 import 'package:tictactoe/src/game_internals/board_setting.dart';
 import 'package:tictactoe/src/game_internals/enums.dart';
 import 'package:tictactoe/src/game_internals/tile.dart';
@@ -56,4 +60,13 @@ abstract class HelperFunctions {
 
     return _hasWinner;
   }
+
+  static String getSimulationOpponentName(AiOpponent? opponent) =>
+      opponent is RandomOpponent
+          ? "Random"
+          : opponent is ThinkingOpponent
+              ? "Think"
+              : opponent is SmartOpponent
+                  ? "Smart"
+                  : "..";
 }

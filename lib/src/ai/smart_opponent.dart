@@ -41,7 +41,7 @@ class SmartOpponent extends AiOpponent {
       }
     }
 
-    print("Total time: ${DateTime.now().difference(startTime).inMilliseconds}");
+    // print("Total time: ${DateTime.now().difference(startTime).inMilliseconds}");
 
     return bestMove;
   }

@@ -12,7 +12,7 @@ abstract class AiOpponent{
   Tile chooseNextMove(BoardState state);
 
   static AiOpponent getRandomOpponent() {
-    final Random _random = Random(10);
+    final Random _random = Random();
     final _randomNum = _random.nextInt(3);
     return _randomNum == 0
         ? RandomOpponent()

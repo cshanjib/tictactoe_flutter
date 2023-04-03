@@ -56,15 +56,18 @@ class BoardState extends ChangeNotifier {
     }
   }
 
-  void simulation({ai1, ai2}) async {
-    AiOpponent aiOpponent1 = ai1 ?? AiOpponent.getRandomOpponent();
-    AiOpponent aiOpponent2 = ai2 ?? AiOpponent.getRandomOpponent();
+  AiOpponent? simulateOpponent1;
+  AiOpponent? simulateOpponent2;
 
-    occupyTile((_moves.length % 2 == 0 ? aiOpponent1 : aiOpponent2)
+  void simulation({ai1, ai2}) async {
+    simulateOpponent1 = ai1 ?? AiOpponent.getRandomOpponent();
+    simulateOpponent2 = ai2 ?? AiOpponent.getRandomOpponent();
+
+    occupyTile((_moves.length % 2 == 0 ? simulateOpponent1 : simulateOpponent2)!
         .chooseNextMove(this));
     await Future.delayed(Duration(seconds: 2));
     if (gameResult.value == null) {
-      simulation(ai1: aiOpponent1, ai2: aiOpponent2);
+      simulation(ai1: simulateOpponent1, ai2: simulateOpponent2);
     } else {
       _moves.clear();
       notifyListeners();
@@ -77,6 +80,8 @@ class BoardState extends ChangeNotifier {
     _moves.clear();
     winnerLines.clear();
     winCombos.clear();
+    simulateOpponent1 = null;
+    simulateOpponent2 = null;
     gameResult.value = null;
     initializeBoard();
   }
@@ -143,6 +148,5 @@ class BoardState extends ChangeNotifier {
                 : direction == CheckDirection.horizontal
                     ? CheckDirection.bottomRightToTopLeft
                     : CheckDirection.bottomLeftToTopRight);
-
   }
 }
