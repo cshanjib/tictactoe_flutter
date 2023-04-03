@@ -1,12 +1,3 @@
-// Copyright 2022, the Flutter project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
-// Uncomment the following lines when enabling Firebase Crashlytics
-// import 'dart:io';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'firebase_options.dart';
-
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -148,7 +139,7 @@ class MyApp extends StatelessWidget {
                       child: LevelSelectionScreen(
                           isVsMode: state.params['mode'] == "vs",
                           key: Key('level selection')),
-                      color: context.watch<Palette>().backgroundLevelSelection,
+                      color: context.watch<Palette>().text,
                     ),
                 routes: [
                   GoRoute(
@@ -176,7 +167,7 @@ class MyApp extends StatelessWidget {
                           setting,
                           key: const Key('play session'),
                         ),
-                        color: context.watch<Palette>().backgroundPlaySession,
+                        color: context.watch<Palette>().backgroundMain,
                       );
                     },
                   ),

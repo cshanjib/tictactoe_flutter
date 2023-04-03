@@ -5,6 +5,7 @@ import 'package:tictactoe/src/game_internals/board_state.dart';
 import 'package:tictactoe/src/game_internals/tile.dart';
 import 'package:tictactoe/src/play_session/board_lines.dart';
 import 'package:tictactoe/src/play_session/board_tile.dart';
+import 'package:tictactoe/src/style/palette.dart';
 
 class MainBoardSession extends StatelessWidget {
   const MainBoardSession({Key? key}) : super(key: key);
@@ -15,12 +16,13 @@ class MainBoardSession extends StatelessWidget {
         context.select((BoardState state) => state.setting);
     final List _winningLines =
         context.select((BoardState state) => state.winnerLines);
+    final palette = context.watch<Palette>();
     return AspectRatio(
       aspectRatio: _setting.m / _setting.n,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          BoardLines(m: _setting.m, n: _setting.n),
+          BoardLines(m: _setting.m, n: _setting.n, color: palette.text,),
           ..._winningLines
               .map((line) => WinningLines(
                   m: _setting.m, n: _setting.n, tile1: line[0], tile2: line[1]))

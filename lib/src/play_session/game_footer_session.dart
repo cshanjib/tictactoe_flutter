@@ -22,6 +22,7 @@ class GameFooterSession extends StatelessWidget {
             children: [
               Image.asset(
                 "assets/images/restart.png",
+                color: palette.text,
                 width: 80,
               ),
               Text(

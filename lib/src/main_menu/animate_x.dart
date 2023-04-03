@@ -63,13 +63,16 @@ class _AnimateXState extends State<AnimateX>
               },
               child: Transform.rotate(
                 angle: -math.pi / 5,
-                child: Text(
-                  "I",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontFamily: 'Cloudy',
-                      fontSize: 70,
-                      color: widget.color),
+                child: SizedBox(
+                  width: constraints.biggest.width,
+                  child: FittedBox(
+                    child: Text(
+                      "I",
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontFamily: 'Cloudy', color: widget.color),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -97,13 +100,16 @@ class _AnimateXState extends State<AnimateX>
               },
               child: Transform.rotate(
                 angle: math.pi / 5,
-                child: Text(
-                  "l",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontFamily: 'Cloudy',
-                      fontSize: 70,
-                      color: widget.color),
+                child: SizedBox(
+                  width: constraints.biggest.width,
+                  child: FittedBox(
+                    child: Text(
+                      "l",
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontFamily: 'Cloudy', color: widget.color),
+                    ),
+                  ),
                 ),
               ),
             ),

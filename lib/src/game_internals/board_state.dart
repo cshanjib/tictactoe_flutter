@@ -45,7 +45,7 @@ class BoardState extends ChangeNotifier {
 
   void initializeBoard() {
     if (simulate) {
-      simulation();
+      reInitiateSimulation();
     } else {
       _isLocked = false;
       //make the first move for Ai when playing against Ai and it starts first
@@ -58,32 +58,50 @@ class BoardState extends ChangeNotifier {
 
   AiOpponent? simulateOpponent1;
   AiOpponent? simulateOpponent2;
+  int? _simulationId;
 
-  void simulation({ai1, ai2}) async {
+  Future<void> simulation({ai1, ai2, id}) async {
     simulateOpponent1 = ai1 ?? AiOpponent.getRandomOpponent();
     simulateOpponent2 = ai2 ?? AiOpponent.getRandomOpponent();
 
+    await Future.delayed(Duration(seconds: 1));
+    if (id != _simulationId) return;
     occupyTile((_moves.length % 2 == 0 ? simulateOpponent1 : simulateOpponent2)!
         .chooseNextMove(this));
     await Future.delayed(Duration(seconds: 2));
+    if (id != _simulationId) return;
+
     if (gameResult.value == null) {
-      simulation(ai1: simulateOpponent1, ai2: simulateOpponent2);
+      simulation(ai1: simulateOpponent1, ai2: simulateOpponent2, id: id);
+      if (id != _simulationId) return;
     } else {
       _moves.clear();
       notifyListeners();
       await Future.delayed(Duration(seconds: 2));
+      if (id != _simulationId) return;
       clearBoard();
     }
   }
 
-  void clearBoard() {
+  void reInitiateSimulation({forceStop = false}) async {
+    if (_simulationId == null && !forceStop) {
+      _simulationId = DateTime.now().millisecondsSinceEpoch;
+      simulation(id: _simulationId);
+    } else {
+      _simulationId = null;
+      clearBoard(restartSimulation: false);
+    }
+  }
+
+  void clearBoard({restartSimulation = true}) {
     _moves.clear();
     winnerLines.clear();
     winCombos.clear();
     simulateOpponent1 = null;
     simulateOpponent2 = null;
+    _simulationId = null;
     gameResult.value = null;
-    initializeBoard();
+    if (restartSimulation) initializeBoard();
   }
 
   @override

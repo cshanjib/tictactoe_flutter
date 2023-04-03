@@ -21,7 +21,7 @@ class _AnimateOState extends State<AnimateO> with SingleTickerProviderStateMixin
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
     _controller.value = 1;
@@ -61,10 +61,16 @@ class _AnimateOState extends State<AnimateO> with SingleTickerProviderStateMixin
               child: child,
             );
           },
-          child: Text(
-            "O",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontFamily: 'Cloudy', fontSize: 70, color: widget.color),
+          child: SizedBox(
+            width: constraints.biggest.width,
+            child: FittedBox(
+              // fit: BoxFit.scaleDown,
+              child: Text(
+                "O",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontFamily: 'Cloudy', color: widget.color),
+              ),
+            ),
           )
         );
       },

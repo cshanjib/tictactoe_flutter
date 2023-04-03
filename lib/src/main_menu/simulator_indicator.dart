@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:tictactoe/src/ai/ai_opponent.dart';
 import 'package:tictactoe/src/game_internals/board_state.dart';
-import 'package:tictactoe/src/helpers/helper_functions.dart';
 import 'package:tictactoe/src/style/palette.dart';
 
 class SimulatorIndicator extends StatelessWidget {
@@ -20,7 +20,7 @@ class SimulatorIndicator extends StatelessWidget {
         Container(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
           child: Text(
-            HelperFunctions.getSimulationOpponentName(opponent1),
+            AiOpponent.getSimulationOpponentName(opponent1),
             style: TextStyle(color: palette.backgroundMain, fontSize: 6),
           ),
           color: palette.colorOption1,
@@ -35,7 +35,7 @@ class SimulatorIndicator extends StatelessWidget {
         ),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-          child: Text(HelperFunctions.getSimulationOpponentName(opponent2),
+          child: Text(AiOpponent.getSimulationOpponentName(opponent2),
               style: TextStyle(
                   color: palette.backgroundMain,
                   fontSize: 6,

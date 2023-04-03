@@ -19,6 +19,7 @@ class GameHeaderSession extends StatelessWidget {
               onTap: () => GoRouter.of(context).pop(),
               child: Image.asset(
                 'assets/images/back.png',
+                color: palette.text,
               )),
           Expanded(
               child: Text(
@@ -34,6 +35,7 @@ class GameHeaderSession extends StatelessWidget {
               onTap: () => GoRouter.of(context).go('/settings'),
               child: Image.asset(
                 'assets/images/settings.png',
+                color: palette.text,
               )),
         ],
       ),
