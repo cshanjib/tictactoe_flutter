@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 
 /// A widget that makes it easy to create a screen with a square-ish
@@ -12,7 +10,7 @@ class ResponsiveScreen extends StatelessWidget {
 
   /// The second-largest area after [squarishMainArea]. It can be narrow
   /// or wide.
-  final Widget rectangularMenuArea;
+  final Widget? rectangularMenuArea;
 
   /// An area reserved for some static text close to the top of the screen.
   final Widget topMessageArea;
@@ -23,7 +21,7 @@ class ResponsiveScreen extends StatelessWidget {
 
   const ResponsiveScreen({
     required this.squarishMainArea,
-    required this.rectangularMenuArea,
+    this.rectangularMenuArea,
     this.topMessageArea = const SizedBox.shrink(),
     this.mainAreaProminence = 0.8,
     super.key,
@@ -97,20 +95,21 @@ class ResponsiveScreen extends StatelessWidget {
                         child: topMessageArea,
                       ),
                     ),
-                    Expanded(
-                      child: SafeArea(
-                        top: false,
-                        left: false,
-                        maintainBottomViewPadding: true,
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Padding(
-                            padding: padding,
-                            child: rectangularMenuArea,
+                    if (rectangularMenuArea != null)
+                      Expanded(
+                        child: SafeArea(
+                          top: false,
+                          left: false,
+                          maintainBottomViewPadding: true,
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: padding,
+                              child: rectangularMenuArea,
+                            ),
                           ),
                         ),
-                      ),
-                    )
+                      )
                   ],
                 ),
               ),

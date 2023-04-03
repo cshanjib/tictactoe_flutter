@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:tictactoe/src/game_internals/board_setting.dart';
+import 'package:tictactoe/src/game_internals/enums.dart';
 import 'package:tictactoe/src/level_selection/game_map.dart';
 import 'package:collection/collection.dart';
 import 'package:tictactoe/src/style/ink_transition.dart';
@@ -149,17 +150,16 @@ class MyApp extends StatelessWidget {
                       final isVsMode = state.params["mode"] == "vs";
                       late final BoardSetting setting;
                       if (isVsMode) {
-                        setting = gameMaps
-                                .firstWhereOrNull(
-                                    (element) => element.id == levelNumber)
-                                ?.setting ??
-                            BoardSetting.defaultBoard();
+                        setting = state.extra is BoardSetting
+                            ? state.extra as BoardSetting
+                            : BoardSetting.defaultBoard();
                       } else {
                         //todo fix this:: handle properly for the cases when the level doesnot exist and cannot play the level yet
                         setting = gameLevels
                                 .firstWhereOrNull(
                                     (element) => element.id == levelNumber)
-                                ?.setting ??
+                                ?.setting
+                                .update(playerIsX: state.extra == Side.X) ??
                             BoardSetting.defaultBoard();
                       }
                       return buildTransition<void>(

@@ -28,6 +28,21 @@ class BoardSetting {
 
   Side get opponentSide => playerSide == Side.X ? Side.O : Side.X;
 
+  BoardSetting update(
+      {int? m,
+      int? n,
+      int? k,
+      int? gameId,
+      bool? playerIsX,
+      bool? opponentStarts,
+      AiOpponent? aiOpponent}) {
+    return BoardSetting(m ?? this.m, n ?? this.n, k ?? this.k,
+        gameId: gameId ?? this.gameId,
+        opponentStarts: opponentStarts ?? this.opponentStarts,
+        aiOpponent: aiOpponent ?? this.aiOpponent,
+        playerIsX: playerIsX ?? (this.playerSide == Side.X));
+  }
+
   @override
   bool operator ==(Object other) {
     return other is BoardSetting &&

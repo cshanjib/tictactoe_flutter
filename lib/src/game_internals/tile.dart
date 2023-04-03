@@ -6,14 +6,6 @@ class Tile {
 
   Tile(this.x, this.y);
 
-  @override
-  String toString() => 'Tile<$x:$y>';
-
-  @override
-  bool operator ==(Object other) {
-    return other is Tile && other.x == x && other.y == y;
-  }
-
   Tile.downwardTile(Tile tile, int displacement,
       {CheckDirection direction = CheckDirection.vertical})
       : this(
@@ -37,6 +29,14 @@ class Tile {
                 : direction == CheckDirection.bottomRightToTopLeft
                     ? tile.y - displacement
                     : tile.y + displacement);
+
+  @override
+  String toString() => 'Tile<$x:$y>';
+
+  @override
+  bool operator ==(Object other) {
+    return other is Tile && other.x == x && other.y == y;
+  }
 
   @override
   int get hashCode => Object.hash(x, y);
