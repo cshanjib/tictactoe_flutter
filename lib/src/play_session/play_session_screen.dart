@@ -96,7 +96,9 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
     final isGameDraw = state.gameResult.value == Side.NONE;
     if (isGameDraw) {
       GoRouter.of(context).go("/play/vs/won", extra: {
-        "message": "Game Finished. It's a draw",
+        "message": state.setting.isAiPlaying
+            ? "Game Drawn. Try Again."
+            : "Game Finished. It's a draw",
         "setting": widget.setting
       });
     } else {
@@ -114,11 +116,14 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
       if (!mounted) return;
 
       final _settings = context.read<SettingsController>();
-      GoRouter.of(context).go('/play/${widget.setting.isAiPlaying ? 'single':'vs'}/won', extra: {
-        "message":
-            "${state.isPlayer1Winner ? _settings.playerName1.value : widget.setting.isAiPlaying ? "Ai":_settings.playerName2.value} wins",
-        "setting": widget.setting
-      });
+      GoRouter.of(context).go(
+          '/play/${widget.setting.isAiPlaying ? 'single' : 'vs'}/won',
+          extra: {
+            "message": state.setting.isAiPlaying
+                ? "${state.isPlayer1Winner ? "You Win" : "You Lose"}"
+                : "${state.isPlayer1Winner ? _settings.playerName1.value : _settings.playerName2.value} wins.",
+            "setting": widget.setting
+          });
     }
   }
 }

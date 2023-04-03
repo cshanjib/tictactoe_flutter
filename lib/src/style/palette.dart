@@ -37,6 +37,7 @@ class Palette {
   Color get pen => const Color(0xff1d75fb);
   Color get darkPen => const Color(0xFF0050bc);
   Color get redPen => const Color(0xFFd10841);
+  Color get successPen => const Color(0xFF0B6623);
   Color get inkFullOpacity => const Color(0xff352b42);
   Color get ink => const Color(0xee352b42);
   Color get backgroundMain => const Color(0xffFAF9F6);

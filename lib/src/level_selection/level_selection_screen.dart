@@ -68,7 +68,7 @@ class LevelSelectionScreen extends StatelessWidget {
                                   crossAxisSpacing: 10),
                           itemCount: gameLevels.length,
                           itemBuilder: (context, index) =>
-                              LevelSelectionCard(gameLevels[index])))
+                              LevelSelectionCard(gameLevels[index], index: index,)))
             ],
           ),
 

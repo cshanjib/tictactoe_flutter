@@ -148,19 +148,17 @@ class MyApp extends StatelessWidget {
                     pageBuilder: (context, state) {
                       final levelNumber = int.parse(state.params['level']!);
                       final isVsMode = state.params["mode"] == "vs";
-                      late final BoardSetting setting;
-                      if (isVsMode) {
-                        setting = state.extra is BoardSetting
-                            ? state.extra as BoardSetting
-                            : BoardSetting.defaultBoard();
-                      } else {
-                        //todo fix this:: handle properly for the cases when the level doesnot exist and cannot play the level yet
+                      BoardSetting setting = state.extra is BoardSetting
+                          ? state.extra as BoardSetting
+                          : BoardSetting.defaultBoard();
+
+                      if (!isVsMode) {
                         setting = gameLevels
-                                .firstWhereOrNull(
-                                    (element) => element.id == levelNumber)
-                                ?.setting
-                                .update(playerIsX: state.extra == Side.X) ??
-                            BoardSetting.defaultBoard();
+                            .firstWhereOrNull(
+                                (element) => element.id == levelNumber)
+                            ?.setting
+                            .update(playerIsX: setting.playerSide == Side.X)  ?? setting;
+
                       }
                       return buildTransition<void>(
                         child: PlaySessionScreen(

@@ -1,5 +1,3 @@
-
-
 import 'package:tictactoe/src/ai/random_opponent.dart';
 import 'package:tictactoe/src/ai/smart_opponent.dart';
 import 'package:tictactoe/src/ai/thinking_opponent.dart';
@@ -34,26 +32,30 @@ const gameLevels = [
   ),
   GameLevel(
     id: 5,
-    setting: BoardSetting(3, 3, 3,
+    setting: BoardSetting(4, 4, 3,
         gameId: 5, aiOpponent: ThinkingOpponent(), opponentStarts: true),
     difficulty: 300,
   ),
   GameLevel(
     id: 6,
-    setting: BoardSetting(4, 4, 3,
-        gameId: 6, aiOpponent: ThinkingOpponent(), opponentStarts: true),
+    setting: BoardSetting(5, 5, 4, gameId: 6, aiOpponent: ThinkingOpponent()),
     difficulty: 400,
   ),
   GameLevel(
     id: 7,
-    setting: BoardSetting(3, 3, 3,
-        gameId: 7, aiOpponent: SmartOpponent()),
-    difficulty: 500,
+    setting: BoardSetting(5, 5, 4,
+        gameId: 7, aiOpponent: ThinkingOpponent(), opponentStarts: true),
+    difficulty: 400,
   ),
   GameLevel(
     id: 8,
+    setting: BoardSetting(3, 3, 3, gameId: 8, aiOpponent: SmartOpponent()),
+    difficulty: 500,
+  ),
+  GameLevel(
+    id: 9,
     setting: BoardSetting(3, 3, 3,
-        gameId: 8, aiOpponent: SmartOpponent(), opponentStarts: true),
+        gameId: 9, aiOpponent: SmartOpponent(), opponentStarts: true),
     difficulty: 600,
   ),
 ];
