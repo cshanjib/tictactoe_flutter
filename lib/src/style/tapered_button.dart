@@ -28,8 +28,9 @@ class TaperedButton extends StatelessWidget {
                   label,
                   style: TextStyle(
                       color: palette.text,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30
+                      // fontWeight: FontWeight.bold,
+                      fontSize: 30,
+                    fontFamily: 'Cloudy'
                   ),
                   textAlign: TextAlign.center,
                 )),

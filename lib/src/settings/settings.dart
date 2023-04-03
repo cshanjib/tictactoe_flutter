@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/foundation.dart';
 
 import 'persistence/settings_persistence.dart';
@@ -13,7 +11,8 @@ class SettingsController {
   /// and sound.
   ValueNotifier<bool> muted = ValueNotifier(false);
 
-  ValueNotifier<String> playerName = ValueNotifier('Player');
+  ValueNotifier<String> playerName1 = ValueNotifier('Player1');
+  ValueNotifier<String> playerName2 = ValueNotifier('Player2');
 
   ValueNotifier<bool> soundsOn = ValueNotifier(false);
 
@@ -34,13 +33,19 @@ class SettingsController {
           .then((value) => muted.value = value),
       _persistence.getSoundsOn().then((value) => soundsOn.value = value),
       _persistence.getMusicOn().then((value) => musicOn.value = value),
-      _persistence.getPlayerName().then((value) => playerName.value = value),
+      _persistence.getPlayerName1().then((value) => playerName1.value = value),
+      _persistence.getPlayerName2().then((value) => playerName2.value = value),
     ]);
   }
 
-  void setPlayerName(String name) {
-    playerName.value = name;
-    _persistence.savePlayerName(playerName.value);
+  void setPlayerName1(String name) {
+    playerName1.value = name;
+    _persistence.savePlayerName1(playerName1.value);
+  }
+
+  void setPlayerName2(String name) {
+    playerName2.value = name;
+    _persistence.savePlayerName2(playerName2.value);
   }
 
   void toggleMusicOn() {

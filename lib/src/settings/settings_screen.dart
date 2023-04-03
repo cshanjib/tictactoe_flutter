@@ -22,29 +22,48 @@ class SettingsScreen extends StatelessWidget {
     final palette = context.watch<Palette>();
 
     return Scaffold(
-      backgroundColor: palette.backgroundSettings,
+      backgroundColor: palette.text,
       body: ResponsiveScreen(
         squarishMainArea: ListView(
           children: [
             _gap,
-            const Text(
-              'Settings',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Permanent Marker',
-                fontSize: 55,
-                height: 1,
-              ),
+            Stack(
+              children: [
+
+                
+                Align(
+                  child:  Text(
+                    'Settings',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Cloudy',
+                      fontSize: 55,
+                      height: 1,
+                      color: palette.backgroundMain
+                    ),
+                  ),
+                ),
+                InkResponse(
+                    onTap: () => GoRouter.of(context).pop(),
+                    child: Image.asset(
+                      'assets/images/back.png',
+                      color: palette.backgroundMain,
+                    )),
+              ],
             ),
             _gap,
             const _NameChangeLine(
-              'Name',
+              'Name1',
+            ),
+            const _NameChangeLine(
+              'Name2',
+              isPlayer1: false,
             ),
             ValueListenableBuilder<bool>(
               valueListenable: settings.soundsOn,
               builder: (context, soundsOn, child) => _SettingsLine(
                 'Sound FX',
-                Icon(soundsOn ? Icons.graphic_eq : Icons.volume_off),
+                Icon(soundsOn ? Icons.graphic_eq : Icons.volume_off, color: palette.backgroundMain,),
                 onSelected: () => settings.toggleSoundsOn(),
               ),
             ),
@@ -52,7 +71,7 @@ class SettingsScreen extends StatelessWidget {
               valueListenable: settings.musicOn,
               builder: (context, musicOn, child) => _SettingsLine(
                 'Music',
-                Icon(musicOn ? Icons.music_note : Icons.music_off),
+                Icon(musicOn ? Icons.music_note : Icons.music_off, color: palette.backgroundMain,),
                 onSelected: () => settings.toggleMusicOn(),
               ),
             ),
@@ -85,7 +104,7 @@ class SettingsScreen extends StatelessWidget {
             }),
             _SettingsLine(
               'Reset progress',
-              const Icon(Icons.delete),
+               Icon(Icons.delete, color: palette.backgroundMain,),
               onSelected: () {
                 context.read<PlayerProgress>().reset();
 
@@ -99,12 +118,12 @@ class SettingsScreen extends StatelessWidget {
             _gap,
           ],
         ),
-        rectangularMenuArea: FilledButton(
-          onPressed: () {
-            GoRouter.of(context).pop();
-          },
-          child: const Text('Back'),
-        ),
+        // rectangularMenuArea: FilledButton(
+        //   onPressed: () {
+        //     GoRouter.of(context).pop();
+        //   },
+        //   child: const Text('Back'),
+        // ),
       ),
     );
   }
@@ -112,16 +131,18 @@ class SettingsScreen extends StatelessWidget {
 
 class _NameChangeLine extends StatelessWidget {
   final String title;
+  final bool isPlayer1;
 
-  const _NameChangeLine(this.title);
+  const _NameChangeLine(this.title, {this.isPlayer1 = true});
 
   @override
   Widget build(BuildContext context) {
     final settings = context.watch<SettingsController>();
+    final palette = context.watch<Palette>();
 
     return InkResponse(
       highlightShape: BoxShape.rectangle,
-      onTap: () => showCustomNameDialog(context),
+      onTap: () => showCustomNameDialog(context, isPlayer1: isPlayer1),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Row(
@@ -134,12 +155,13 @@ class _NameChangeLine extends StatelessWidget {
                 )),
             const Spacer(),
             ValueListenableBuilder(
-              valueListenable: settings.playerName,
+              valueListenable: isPlayer1 ? settings.playerName1 : settings.playerName2,
               builder: (context, name, child) => Text(
                 '‘$name’',
-                style: const TextStyle(
+                style:  TextStyle(
                   fontFamily: 'Permanent Marker',
                   fontSize: 30,
+                  color: palette.backgroundMain
                 ),
               ),
             ),

@@ -35,25 +35,28 @@ class LevelSelectionScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 16),
                 child: Stack(
                   children: [
+                    Center(
+                      child: Text(
+                        isVsMode ? "Vs Mode" : "Vs AI",
+                        style: TextStyle(
+                            fontFamily: 'Cloudy',
+                            fontSize: 30,
+                            color: palette.backgroundMain),
+                      ),
+                    ),
                     InkResponse(
                         onTap: () => GoRouter.of(context).pop(),
                         child: Image.asset(
                           'assets/images/back.png',
                           color: palette.backgroundMain,
                         )),
-                    Center(
-                      child: Text(
-                        isVsMode ? "Vs Mode" : "Vs AI",
-                        style:
-                            TextStyle(fontFamily: 'Cloudy', fontSize: 30, color: palette.backgroundMain),
-                      ),
-                    ),
                   ],
                 ),
               ),
               const SizedBox(height: 10),
-              OptionSelector(isVsMode: isVsMode,),
-
+              OptionSelector(
+                isVsMode: isVsMode,
+              ),
               Expanded(
                   child: isVsMode
                       ? MapSelector()

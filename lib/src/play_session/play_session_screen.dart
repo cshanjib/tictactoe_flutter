@@ -116,7 +116,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
       final _settings = context.read<SettingsController>();
       GoRouter.of(context).go('/play/${widget.setting.isAiPlaying ? 'single':'vs'}/won', extra: {
         "message":
-            "${state.isPlayer1Winner ? _settings.playerName.value : widget.setting.isAiPlaying ? "Ai":"player2"} wins",
+            "${state.isPlayer1Winner ? _settings.playerName1.value : widget.setting.isAiPlaying ? "Ai":_settings.playerName2.value} wins",
         "setting": widget.setting
       });
     }

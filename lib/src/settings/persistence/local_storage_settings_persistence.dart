@@ -1,5 +1,3 @@
-
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'settings_persistence.dart';
@@ -23,9 +21,15 @@ class LocalStorageSettingsPersistence extends SettingsPersistence {
   }
 
   @override
-  Future<String> getPlayerName() async {
+  Future<String> getPlayerName1() async {
     final prefs = await instanceFuture;
-    return prefs.getString('playerName') ?? 'Player';
+    return prefs.getString('playerName1') ?? 'Player1';
+  }
+
+  @override
+  Future<String> getPlayerName2() async {
+    final prefs = await instanceFuture;
+    return prefs.getString('playerName2') ?? 'Player2';
   }
 
   @override
@@ -47,9 +51,15 @@ class LocalStorageSettingsPersistence extends SettingsPersistence {
   }
 
   @override
-  Future<void> savePlayerName(String value) async {
+  Future<void> savePlayerName1(String value) async {
     final prefs = await instanceFuture;
-    await prefs.setString('playerName', value);
+    await prefs.setString('playerName1', value);
+  }
+
+  @override
+  Future<void> savePlayerName2(String value) async {
+    final prefs = await instanceFuture;
+    await prefs.setString('playerName2', value);
   }
 
   @override

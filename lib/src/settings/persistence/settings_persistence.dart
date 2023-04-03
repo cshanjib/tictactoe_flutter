@@ -1,5 +1,3 @@
-
-
 /// An interface of persistence stores for settings.
 ///
 /// Implementations can range from simple in-memory storage through
@@ -9,7 +7,9 @@ abstract class SettingsPersistence {
 
   Future<bool> getMuted({required bool defaultValue});
 
-  Future<String> getPlayerName();
+  Future<String> getPlayerName1();
+
+  Future<String> getPlayerName2();
 
   Future<bool> getSoundsOn();
 
@@ -17,7 +17,9 @@ abstract class SettingsPersistence {
 
   Future<void> saveMuted(bool value);
 
-  Future<void> savePlayerName(String value);
+  Future<void> savePlayerName1(String value);
+
+  Future<void> savePlayerName2(String value);
 
   Future<void> saveSoundsOn(bool value);
 }
