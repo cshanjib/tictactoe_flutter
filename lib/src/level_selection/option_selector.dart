@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tictactoe/src/audio/audio_controller.dart';
+import 'package:tictactoe/src/audio/sounds.dart';
 import 'package:tictactoe/src/game_internals/enums.dart';
 import 'package:tictactoe/src/game_internals/level_selection_state.dart';
 import 'package:tictactoe/src/main_menu/animate_o.dart';
@@ -15,9 +17,13 @@ class OptionSelector extends StatelessWidget {
     final playerSide =
         context.select((LevelSelectionState state) => state.setting.playerSide);
     final palette = context.watch<Palette>();
+    final audioController = context.read<AudioController>();
 
     return GestureDetector(
-      onTap: () => context.read<LevelSelectionState>().togglePlayerOptions(),
+      onTap: () {
+        audioController.playSfx(SfxType.swishSwish);
+        context.read<LevelSelectionState>().togglePlayerOptions();
+      },
       behavior: HitTestBehavior.opaque,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
