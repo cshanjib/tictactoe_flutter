@@ -47,7 +47,7 @@ class BoardSetting {
   bool operator ==(Object other) {
     return other is BoardSetting &&
         other.m == m &&
-        other.n == n &&
+        other.n == n && other.k == k &&
         other.opponentStarts == opponentStarts &&
         other.playerSide == playerSide &&
         other.gameId == gameId;
