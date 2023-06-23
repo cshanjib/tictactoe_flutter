@@ -70,6 +70,7 @@ void guardedMain() {
 
   WidgetsFlutterBinding.ensureInitialized();
 
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   _log.info('Going full screen');
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.edgeToEdge,
