@@ -79,7 +79,7 @@ void guardedMain() {
   // TODO: When ready, uncomment the following lines to enable integrations.
   //       Read the README for more info on each integration.
 
-  AdsController? adsController;
+  // AdsController? adsController;
   // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
   //   /// Prepare the google_mobile_ads plugin so that the first ad loads
   //   /// faster. This can be done later or with a delay if startup
@@ -88,14 +88,14 @@ void guardedMain() {
   //   adsController.initialize();
   // }
 
-  GamesServicesController? gamesServicesController;
+  // GamesServicesController? gamesServicesController;
   // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
   //   gamesServicesController = GamesServicesController()
   //     // Attempt to log the player in.
   //     ..initialize();
   // }
 
-  InAppPurchaseController? inAppPurchaseController;
+  // InAppPurchaseController? inAppPurchaseController;
   // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
   //   inAppPurchaseController = InAppPurchaseController(InAppPurchase.instance)
   //     // Subscribing to [InAppPurchase.instance.purchaseStream] as soon
@@ -109,9 +109,9 @@ void guardedMain() {
     MyApp(
       settingsPersistence: LocalStorageSettingsPersistence(),
       playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
-      inAppPurchaseController: inAppPurchaseController,
-      adsController: adsController,
-      gamesServicesController: gamesServicesController,
+      // inAppPurchaseController: inAppPurchaseController,
+      // adsController: adsController,
+      // gamesServicesController: gamesServicesController,
     ),
   );
 }
@@ -206,18 +206,18 @@ class MyApp extends StatelessWidget {
 
   final SettingsPersistence settingsPersistence;
 
-  final GamesServicesController? gamesServicesController;
-
-  final InAppPurchaseController? inAppPurchaseController;
-
-  final AdsController? adsController;
+  // final GamesServicesController? gamesServicesController;
+  //
+  // final InAppPurchaseController? inAppPurchaseController;
+  //
+  // final AdsController? adsController;
 
   const MyApp({
     required this.playerProgressPersistence,
     required this.settingsPersistence,
-    required this.inAppPurchaseController,
-    required this.adsController,
-    required this.gamesServicesController,
+    // required this.inAppPurchaseController,
+    // required this.adsController,
+    // required this.gamesServicesController,
     super.key,
   });
 
@@ -233,11 +233,11 @@ class MyApp extends StatelessWidget {
               return progress;
             },
           ),
-          Provider<GamesServicesController?>.value(
-              value: gamesServicesController),
-          Provider<AdsController?>.value(value: adsController),
-          ChangeNotifierProvider<InAppPurchaseController?>.value(
-              value: inAppPurchaseController),
+          // Provider<GamesServicesController?>.value(
+          //     value: gamesServicesController),
+          // Provider<AdsController?>.value(value: adsController),
+          // ChangeNotifierProvider<InAppPurchaseController?>.value(
+          //     value: inAppPurchaseController),
           Provider<SettingsController>(
             lazy: false,
             create: (context) => SettingsController(
@@ -268,6 +268,7 @@ class MyApp extends StatelessWidget {
 
           return MaterialApp.router(
             title: 'Tic Tac Toe',
+            debugShowCheckedModeBanner: false,
             theme: ThemeData.from(
               colorScheme: ColorScheme.fromSeed(
                 seedColor: palette.darkPen,

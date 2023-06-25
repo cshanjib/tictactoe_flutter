@@ -4,7 +4,7 @@ description: A mobile game built in Flutter.
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
 
-version: 0.0.1+1
+version: 0.0.2+2
 
 environment:
   sdk: ">=2.18.0 <3.0.0"
@@ -25,9 +25,9 @@ dependencies:
   # that references the dependency.
   firebase_core: ^2.1.1  # Needed for Crashlytics below
   firebase_crashlytics: ^3.0.3  # Error reporting
-  games_services: ^3.0.0  # Achievements and leaderboards
-  google_mobile_ads: ^2.0.1  # Ads
-  in_app_purchase: ^3.0.1  # In-app purchases
+#  games_services: ^3.0.0  # Achievements and leaderboards
+#  google_mobile_ads: ^2.0.1  # Ads
+#  in_app_purchase: ^3.0.1  # In-app purchases
 
 dev_dependencies:
   flutter_test:

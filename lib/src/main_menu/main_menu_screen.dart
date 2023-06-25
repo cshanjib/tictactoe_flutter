@@ -1,16 +1,10 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tictactoe/src/main_menu/main_animation.dart';
-import 'package:tictactoe/src/play_session/board_lines.dart';
-import 'package:tictactoe/src/style/tapered_boarder.dart';
 import 'package:tictactoe/src/style/tapered_button.dart';
-
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
-import '../games_services/games_services.dart';
 import '../settings/settings.dart';
 import '../style/palette.dart';
 import '../style/responsive_screen.dart';
@@ -21,7 +15,7 @@ class MainMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.watch<Palette>();
-    final gamesServicesController = context.watch<GamesServicesController?>();
+    // final gamesServicesController = context.watch<GamesServicesController?>();
     final settingsController = context.watch<SettingsController>();
     final audioController = context.watch<AudioController>();
 
@@ -60,24 +54,24 @@ class MainMenuScreen extends StatelessWidget {
                     GoRouter.of(context).go('/play/vs');
                   }),
               _gap,
-              if (gamesServicesController != null) ...[
-                _hideUntilReady(
-                  ready: gamesServicesController.signedIn,
-                  child: TaperedButton(
-                    onPressed: () => gamesServicesController.showAchievements(),
-                    label: "Achievements",
-                  ),
-                ),
-                _gap,
-                _hideUntilReady(
-                  ready: gamesServicesController.signedIn,
-                  child: TaperedButton(
-                    onPressed: () => gamesServicesController.showLeaderboard(),
-                    label: "Leaderboard",
-                  ),
-                ),
-                _gap,
-              ],
+              // if (gamesServicesController != null) ...[
+              //   _hideUntilReady(
+              //     ready: gamesServicesController.signedIn,
+              //     child: TaperedButton(
+              //       onPressed: () => gamesServicesController.showAchievements(),
+              //       label: "Achievements",
+              //     ),
+              //   ),
+              //   _gap,
+              //   _hideUntilReady(
+              //     ready: gamesServicesController.signedIn,
+              //     child: TaperedButton(
+              //       onPressed: () => gamesServicesController.showLeaderboard(),
+              //       label: "Leaderboard",
+              //     ),
+              //   ),
+              //   _gap,
+              // ],
               Padding(
                 padding: const EdgeInsets.only(top: 32),
                 child: ValueListenableBuilder<bool>(

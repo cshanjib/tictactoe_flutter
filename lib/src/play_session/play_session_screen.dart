@@ -9,11 +9,8 @@ import 'package:tictactoe/src/game_internals/board_state.dart';
 import 'package:tictactoe/src/game_internals/enums.dart';
 import 'package:tictactoe/src/play_session/play_session_screen_ui.dart';
 import 'package:tictactoe/src/settings/settings.dart';
-
-import '../ads/ads_controller.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
-import '../in_app_purchase/in_app_purchase.dart';
 import '../style/confetti.dart';
 import '../style/palette.dart';
 
@@ -82,12 +79,12 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
     _startOfPlay = DateTime.now();
 
     // Preload ad for the win screen.
-    final adsRemoved =
-        context.read<InAppPurchaseController?>()?.adRemoval.active ?? false;
-    if (!adsRemoved) {
-      final adsController = context.read<AdsController?>();
-      adsController?.preloadAd();
-    }
+    // final adsRemoved =
+    //     context.read<InAppPurchaseController?>()?.adRemoval.active ?? false;
+    // if (!adsRemoved) {
+    //   final adsController = context.read<AdsController?>();
+    //   adsController?.preloadAd();
+    // }
   }
 
   Future<void> _onGameComplete(BoardState state) async {
