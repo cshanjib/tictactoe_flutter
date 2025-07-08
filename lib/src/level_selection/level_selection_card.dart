@@ -34,7 +34,7 @@ class LevelSelectionCard extends StatelessWidget {
                 "*",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    height: 1.1,
+                    height: 0.9,
                     fontWeight: FontWeight.bold,
                     fontSize: 240,
                     color: palette.backgroundMain,

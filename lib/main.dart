@@ -133,13 +133,13 @@ class MyApp extends StatelessWidget {
             GoRoute(
                 path: 'play/:mode',
                 redirect: (BuildContext context, GoRouterState state) =>
-                    state.params["mode"] == "single" ||
-                            state.params["mode"] == "vs"
+                    state.pathParameters["mode"] == "single" ||
+                            state.pathParameters["mode"] == "vs"
                         ? null
                         : "/play/single",
                 pageBuilder: (context, state) => buildTransition<void>(
                       child: LevelSelectionScreen(
-                          isVsMode: state.params['mode'] == "vs",
+                          isVsMode: state.pathParameters['mode'] == "vs",
                           key: Key('level selection')),
                       color: context.watch<Palette>().text,
                     ),
@@ -147,8 +147,8 @@ class MyApp extends StatelessWidget {
                   GoRoute(
                     path: 'session/:level',
                     pageBuilder: (context, state) {
-                      final levelNumber = int.parse(state.params['level']!);
-                      final isVsMode = state.params["mode"] == "vs";
+                      final levelNumber = int.parse(state.pathParameters['level']!);
+                      final isVsMode = state.pathParameters["mode"] == "vs";
                       BoardSetting setting = state.extra is BoardSetting
                           ? state.extra as BoardSetting
                           : BoardSetting.defaultBoard();

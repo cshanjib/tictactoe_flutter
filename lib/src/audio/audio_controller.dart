@@ -161,6 +161,7 @@ class AudioController {
         }
         break;
       case AppLifecycleState.inactive:
+      default:
         // No need to react to this state change.
         break;
     }
@@ -223,6 +224,9 @@ class AudioController {
             "Music should never be 'completed' as it's either not playing "
             "or looping forever.");
         await _playFirstSongInPlaylist();
+        break;
+
+      default:
         break;
     }
   }
